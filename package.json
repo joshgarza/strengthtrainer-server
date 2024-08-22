@@ -11,7 +11,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "ts-node-esm dist/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.ts"
   },
   "type": "module",
   "keywords": [],
