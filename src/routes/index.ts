@@ -7,7 +7,7 @@ import {
 
 export const router = express.Router();
 
-// router.get("/", controllers.test);
+router.get("/", userControllers.test);
 
 // User routes
 router.post("/register", userControllers.register);

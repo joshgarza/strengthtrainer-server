@@ -1,4 +1,4 @@
-import {client} from '../config/db.js'
+import { client } from "../config/db.js";
 
 export const relationModels = {
   // export const models = {
@@ -7,7 +7,7 @@ export const relationModels = {
   //     return result.rows[0].now;
   //   },
   // };
-  postCoachClientRelation: async () => {};
-  getCoachClientRelation: async () => {};
-  putCoachClientRelation: async () => {};
-}
+  postCoachClientRelation: async () => {},
+  getCoachClientRelation: async () => {},
+  putCoachClientRelation: async () => {},
+};
