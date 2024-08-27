@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { userModels } from "../models/index.js";
 import { hashPassword, compareHash } from "../utils/index.js";
+import { signJWT } from "../utils/index.js";
 
 export const userControllers = {
   register: async (req: Request, res: Response): Promise<void> => {
@@ -13,15 +14,23 @@ export const userControllers = {
       const newUser = await userModels.register(username, email, hash, role);
 
       if (newUser) {
+        const userData = {
+          id: newUser.id,
+          username: username,
+          email: email,
+          role: role,
+        };
+        const jwt = await signJWT(userData);
         res.status(201).json({
           message: "User successfully registered",
-          jwt: "jwt goes here",
+          jwt: jwt,
         });
       } else {
         console.error("Error registering user");
         res.status(500).json({ message: "Internal server error" });
       }
     } catch (err) {
+      console.error(err);
       res.status(500).json({ message: "Error registering user" });
     }
   },
@@ -42,7 +51,8 @@ export const userControllers = {
       const isMatch = await compareHash(password, hash);
 
       if (isMatch) {
-        res.status(200).json({ message: "Logged in successfully" });
+        // const jwt = await signJWT();
+        res.status(200).json({ message: "Logged in successfully", jwt: "jwt" });
       } else {
         res.status(401).json({ message: "Invalid email or password" });
       }
