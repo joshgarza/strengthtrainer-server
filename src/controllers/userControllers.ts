@@ -1,42 +1,56 @@
 import { Request, Response } from "express";
 import { userModels } from "../models/index.js";
-import bcrypt from "bcrypt";
+import { hashPassword, compareHash } from "../utils/async/hashing.js";
 
 export const userControllers = {
-  test: async (req: Request, res: Response): Promise<void> => {
-    res.send("hello");
-  },
   register: async (req: Request, res: Response): Promise<void> => {
-    console.log("Registering");
-    const { username, email, password, role } = req.body;
-    // run password through bcrypt and send the result of that as password hash to userModels.register
-    bcrypt.hash(password, 10, (err, hash) => {
-      console.log("PW:", password);
-      console.log("Hash:", hash);
-      res.send(userModels.register(username, email, hash, role));
-    });
+    try {
+      console.log("Registering");
+      const { username, email, password, role } = req.body;
+      const hash = await hashPassword(password);
+
+      // Add new user to users table
+      const newUser = await userModels.register(username, email, hash, role);
+
+      if (newUser) {
+        res.status(201).json({
+          message: "User successfully registered",
+          jwt: "jwt goes here",
+        });
+      } else {
+        console.error("Error registering user");
+        res.status(500).json({ message: "Internal server error" });
+      }
+    } catch (err) {
+      res.send("Error");
+    }
   },
   login: async (req: Request, res: Response): Promise<void> => {
-    console.log("Logging in");
-    const { email, password } = req.body;
+    try {
+      console.log("Logging in");
+      const { email, password } = req.body;
 
-    // get user hash
-    const hash = await userModels.getUserHash(email);
-    console.log(hash);
+      // Retrieve the stored hash for the given email
+      const hash = await userModels.getUserHash(email);
 
-    bcrypt.compare(password, hash, (err, result) => {
-      if (err) {
-        console.log("Error logging in:", err);
-        res.send("Error logging in");
-      } else {
-        console.log("Result:", result);
-        if (result) {
-          res.send("Logged in.");
-        } else {
-          res.send("Error logging in");
-        }
+      // Check if hash exists (i.e., user exists)
+      if (!hash) {
+        res.status(401).json({ message: "User not found" });
       }
-    });
+
+      // Compare the provided password with the stored hash
+      const isMatch = await compareHash(password, hash);
+
+      if (isMatch) {
+        res.status(200).json({ message: "Logged in successfully" });
+      } else {
+        res.status(401).json({ message: "Invalid email or password" });
+      }
+    } catch (err) {
+      console.error("Error logging in:", err);
+      // Internal server error
+      res.status(500).json({ message: "Internal server error" });
+    }
   },
   passwordReset: async (req: Request, res: Response): Promise<void> => {},
   resetPassword: async (req: Request, res: Response): Promise<void> => {},

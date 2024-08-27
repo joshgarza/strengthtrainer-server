@@ -1,12 +1,6 @@
 import { client } from "../config/db.js";
 
 export const userModels = {
-  // export const models = {
-  //   test: async () => {
-  //     const result = await client.query("SELECT NOW()");
-  //     return result.rows[0].now;
-  //   },
-  // };
   getUserHash: async (email: string) => {
     const query = `SELECT password_hash FROM users WHERE email = $1`;
     const value = [email];
@@ -16,7 +10,7 @@ export const userModels = {
       return res.rows[0].password_hash;
     } catch (err) {
       console.error("Error executing query", err);
-      throw err;
+      return err;
     }
   },
   register: async (
