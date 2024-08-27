@@ -22,7 +22,7 @@ export const userControllers = {
         res.status(500).json({ message: "Internal server error" });
       }
     } catch (err) {
-      res.send("Error");
+      res.status(500).json({ message: "Error registering user" });
     }
   },
   login: async (req: Request, res: Response): Promise<void> => {
