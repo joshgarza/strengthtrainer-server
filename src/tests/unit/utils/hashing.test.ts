@@ -1,4 +1,4 @@
-import { hashPassword } from "../../../utils/async/hashing.js";
+import { hashPassword } from "../../../utils/index.js";
 import bcrypt from "bcrypt";
 
 // Mock bcrypt.hash function

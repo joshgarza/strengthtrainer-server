@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { userModels } from "../models/index.js";
-import { hashPassword, compareHash } from "../utils/async/hashing.js";
+import { hashPassword, compareHash } from "../utils/index.js";
 
 export const userControllers = {
   register: async (req: Request, res: Response): Promise<void> => {
