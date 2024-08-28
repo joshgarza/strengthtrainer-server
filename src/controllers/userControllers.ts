@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { userModels } from "../models/index.js";
 import { hashPassword, compareHash } from "../utils/index.js";
-import { signJWT } from "../utils/index.js";
+import { signJWT, verifyJWT } from "../utils/index.js";
 
 export const userControllers = {
   register: async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log("Registering");
       const { username, email, password, role } = req.body;
       const hash = await hashPassword(password);
 
@@ -21,6 +20,7 @@ export const userControllers = {
           role: role,
         };
         const jwt = await signJWT(userData);
+
         res.status(201).json({
           message: "User successfully registered",
           jwt: jwt,
@@ -36,7 +36,6 @@ export const userControllers = {
   },
   login: async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log("Logging in");
       const { email, password } = req.body;
 
       // Retrieve the stored hash for the given email
@@ -48,11 +47,22 @@ export const userControllers = {
       }
 
       // Compare the provided password with the stored hash
-      const isMatch = await compareHash(password, hash);
+      const hashesMatch = await compareHash(password, hash);
 
-      if (isMatch) {
-        // const jwt = await signJWT();
-        res.status(200).json({ message: "Logged in successfully", jwt: "jwt" });
+      if (hashesMatch) {
+        // retrieve user information to be signed in JWT
+        const userData = await userModels.getUserData(email);
+        const jwt = await signJWT(userData);
+
+        /**
+          interface UserData {
+            id: string;
+            username: string;
+            email: string;
+            role: string;
+          }
+        */
+        res.status(200).json({ message: "Logged in successfully", jwt: jwt });
       } else {
         res.status(401).json({ message: "Invalid email or password" });
       }
