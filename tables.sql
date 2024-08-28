@@ -110,7 +110,6 @@ CREATE TABLE exercise_assignments (
   percentage_of_e1rm FLOAT NULL,
   percentage_of_last_set FLOAT NULL,
   adjusted_weight FLOAT NULL,
-  duration INT NULL,
   rpe_target INT NULL,
   amrap BOOLEAN NOT NULL DEFAULT FALSE,
   amsap BOOLEAN NOT NULL DEFAULT FALSE,
