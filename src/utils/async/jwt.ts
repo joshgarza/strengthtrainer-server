@@ -20,17 +20,12 @@ export const signJWT = async (payload: UserData): Promise<string> => {
   }
 };
 
-export const verifyJWT = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void | JwtPayload> => {
+export const verifyJWT = async (req: Request, res: Response, next: NextFunction): Promise<void | JwtPayload> => {
   try {
     const token = req.headers["authorization"]?.split(" ")[1];
     if (!process.env.JWT_SECRET || !token) {
       return res.status(403).json({
-        message:
-          "Insufficient data to authorize request. Please provide a valid token and secret.",
+        message: "Insufficient data to authorize request. Please provide a valid token and secret.",
       });
     }
 
@@ -38,6 +33,8 @@ export const verifyJWT = async (
       if (err || !decoded || typeof decoded === "string") {
         return res.status(401).json({ message: "Error verifying token" });
       }
+      // decoding id coerces it into a number by default. Coercing it back to a string.
+      decoded.id = String(decoded.id);
       req.user = decoded;
       next();
     });

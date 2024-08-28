@@ -1,10 +1,6 @@
 import express from "express";
-import {
-  userControllers,
-  workoutControllers,
-  relationControllers,
-} from "../controllers/index.js";
-import { verifyJWT } from "../utils/index.js";
+import { userControllers, workoutControllers, relationControllers } from "../controllers/index.js";
+import { verifyJWT, validateUser } from "../utils/index.js";
 
 export const router = express.Router();
 
@@ -13,24 +9,18 @@ router.post("/register", userControllers.register);
 router.post("/login", userControllers.login);
 
 router.use(verifyJWT);
+// router.use(validateUser);
 
 // protected routes
-router.post("/password-reset", userControllers.passwordReset);
-router.post("/reset-password", userControllers.resetPassword);
-router.get("/workouts", workoutControllers.getWorkouts);
-router.post("/workout-assignment", workoutControllers.postWorkout);
-router.put("/workout-assignment", workoutControllers.putWorkout);
-router.post("/workout-result", workoutControllers.postWorkoutResult);
-router.put("/workout-result", workoutControllers.putWorkoutResult);
-router.post(
-  "/coach-client-relation",
-  relationControllers.postCoachClientRelation
-);
-router.get(
-  "/coach-client-relation",
-  relationControllers.getCoachClientRelation
-);
-router.put(
-  "/coach-client-relation",
-  relationControllers.putCoachClientRelation
-);
+router.post("/password-reset", validateUser, userControllers.passwordReset);
+router.post("/reset-password", validateUser, userControllers.resetPassword);
+router.post("/workout-assignment", validateUser, workoutControllers.postWorkout);
+router.post("/workout-result", validateUser, workoutControllers.postWorkoutResult);
+router.get("/workouts/:id", validateUser, workoutControllers.getWorkouts);
+router.put("/workout-assignment/:id", validateUser, workoutControllers.putWorkout);
+router.put("/workout-result/:id", validateUser, workoutControllers.putWorkoutResult);
+
+// saving for future features
+router.post("/coach-client-relation", relationControllers.postCoachClientRelation);
+router.get("/coach-client-relation", relationControllers.getCoachClientRelation);
+router.put("/coach-client-relation", relationControllers.putCoachClientRelation);

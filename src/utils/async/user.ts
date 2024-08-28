@@ -1,5 +1,6 @@
 import { userModels } from "../../models/index.js";
 import { hashPassword, compareHash } from "./hashing.js";
+import { Request, Response, NextFunction } from "express";
 
 export const checkPassword = async (email: string, password: string) => {
   // Retrieve the stored hash for the given email
@@ -23,12 +24,7 @@ export const checkPassword = async (email: string, password: string) => {
   }
 };
 
-export const registerUser = async (
-  username: string,
-  email: string,
-  password: string,
-  role: string
-) => {
+export const registerUser = async (username: string, email: string, password: string, role: string) => {
   try {
     console.log("attempting to register");
     const hash = await hashPassword(password);
@@ -43,5 +39,25 @@ export const registerUser = async (
     }
   } catch (err) {
     return { valid: false, error: err };
+  }
+};
+
+// After decoding JWT, compare user id from JWT and resource id being requested
+export const validateUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    let id: string;
+    if (req.method === "POST") {
+      id = req.body.id;
+    } else {
+      id = req.params.id;
+    }
+
+    if (req.user?.id !== id) {
+      return res.status(403).json({ message: "Error authorizing request" });
+    }
+
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: "Error authorizing request" });
   }
 };
