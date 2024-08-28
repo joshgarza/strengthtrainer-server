@@ -1,4 +1,7 @@
 {
+  "ts-node": {
+    "files": true
+  },
   "compilerOptions": {
     "esModuleInterop": true,
     "lib": ["es2020"],
@@ -9,6 +12,7 @@
     "sourceMap": true,
     "target": "es2022",
     "types": ["node", "jest"],
+    "typeRoots": ["./src/types/*.d.ts", "./node_modules/@types"],
     "outDir": "dist"
   },
   "include": ["src/**/*"],

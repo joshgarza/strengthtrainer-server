@@ -6,7 +6,9 @@ export const workoutControllers = {
   //   const result = await models.test();
   //   res.send(result);
   // },
-  getWorkouts: async (req: Request, res: Response): Promise<void> => {},
+  getWorkouts: async (req: Request, res: Response): Promise<void> => {
+    res.status(200).json({ message: req.user });
+  },
   postWorkout: async (req: Request, res: Response): Promise<void> => {},
   putWorkout: async (req: Request, res: Response): Promise<void> => {},
   postWorkoutResult: async (req: Request, res: Response): Promise<void> => {},

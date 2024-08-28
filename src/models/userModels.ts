@@ -2,14 +2,6 @@ import { client } from "../config/db.js";
 
 export const userModels = {
   getUserData: async (email: string) => {
-    /**
-      interface UserData {
-        id: string;
-        username: string;
-        email: string;
-        role: string;
-      }
-    */
     const query = `SELECT id, name, email, role FROM users WHERE email = $1`;
     const value = [email];
 
@@ -39,21 +31,6 @@ export const userModels = {
     passwordHash: string,
     role: string
   ) => {
-    /**
-     * what's involved in registering?
-     * - checking to see if there's a conflict in the db for the email
-     * - email is unique
-     * -- email validation
-     * - hash the password
-     * - insert into users: name, email, hash, and role
-     */
-
-    // check unique email
-
-    // validate email
-
-    //
-
     const query = `INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING *`;
     const values = [name, email, passwordHash, role];
 
@@ -69,11 +46,3 @@ export const userModels = {
   passwordReset: async () => {},
   resetPassword: async () => {},
 };
-
-/**
- * thinking of this as a class instead of just a basic object
- *
- * userModels can have a constructor that initializes the client object in /config/db.js
- * methods to do basic operations can be abstracted to a common class that can be used across various models
- * maybe we have a generic
- */

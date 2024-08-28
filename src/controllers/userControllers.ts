@@ -17,7 +17,6 @@ export const userControllers = {
       }
 
       const jwt = await signJWT(userData);
-
       res.status(201).json({
         message: "User successfully registered",
         jwt: jwt,

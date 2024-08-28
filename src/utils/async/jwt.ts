@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from "express";
 import jsonwebtoken, { JwtPayload } from "jsonwebtoken";
 const jwt = jsonwebtoken;
 
@@ -19,20 +20,28 @@ export const signJWT = async (payload: UserData): Promise<string> => {
   }
 };
 
-export const verifyJWT = async (token: string): Promise<void | JwtPayload> => {
+export const verifyJWT = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | JwtPayload> => {
   try {
-    if (!process.env.JWT_SECRET) {
-      throw Error("Please define JWT_SECRET in .env");
+    const token = req.headers["authorization"]?.split(" ")[1];
+    if (!process.env.JWT_SECRET || !token) {
+      return res.status(403).json({
+        message:
+          "Insufficient data to authorize request. Please provide a valid token and secret.",
+      });
     }
-    const verify = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err || !decoded || typeof decoded === "string") {
-        throw Error("Error verifying token");
+        return res.status(401).json({ message: "Error verifying token" });
       }
-      return decoded;
+      req.user = decoded;
+      next();
     });
-    return verify;
   } catch (err) {
-    console.error(err);
-    return;
+    return res.status(500).json({ message: err });
   }
 };
