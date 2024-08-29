@@ -2,6 +2,12 @@ import { userModels } from "../../models/index.js";
 import { hashPassword, compareHash } from "./hashing.js";
 import { Request, Response, NextFunction } from "express";
 
+// interface RegisterUserData {
+//   valid: boolean,
+//   userData?: UserData,
+//   error?: string
+// }
+
 export const checkPassword = async (email: string, password: string) => {
   // Retrieve the stored hash for the given email
   const hash = await userModels.getUserHash(email);
