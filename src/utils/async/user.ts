@@ -52,7 +52,7 @@ export const validateUser = async (req: Request, res: Response, next: NextFuncti
       id = req.params.id;
     }
 
-    if (req.user?.id !== id) {
+    if (req.user?.id !== String(id)) {
       return res.status(403).json({ message: "Error authorizing request" });
     }
 
