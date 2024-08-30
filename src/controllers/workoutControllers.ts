@@ -10,8 +10,11 @@ export const workoutControllers = {
   postWorkout: async (req: Request, res: Response): Promise<void> => {
     try {
       // validate workout
-      const { workoutData, error } = await validateWorkout(req.body);
+      const workoutData = await validateWorkout(req.body);
 
+      // if (error) {
+      //   res.status(500).json({ message: "Failed to create workout", error: error.message });
+      // }
       // const result = await workoutModels.createWorkout(workoutData);
       // res.status(201).json({ message: "Workout created successfully", data: result });
       res.status(201).json({ message: workoutData });

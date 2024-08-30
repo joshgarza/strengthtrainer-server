@@ -1,6 +1,31 @@
 // import { WorkoutData } from "workout-types";
 import { object, array, string, number, date, boolean, InferType, ValidationError } from "yup";
 
+// Transformation to cast 0 to null
+const castZeroToNull = (value: any, originalValue: any) => (originalValue === 0 ? null : value);
+
+// XOR validation function
+const xorValidation = (field1: string, field2: string) => {
+  return function (value: any) {
+    const fieldValue1 = value[field1];
+    const fieldValue2 = value[field2];
+
+    if (fieldValue1 !== null) {
+      return fieldValue2 === false;
+    } else {
+      return fieldValue2 !== false;
+    }
+  };
+};
+
+// OneOf validation function
+const oneOfValidation = (fields: string[]) => {
+  return function (value: any) {
+    const count = fields.filter((field) => value[field] != null).length;
+    return count === 1;
+  };
+};
+
 let workoutDataSchema = object({
   id: number().required(),
   workout_date: date().required(),
@@ -19,24 +44,13 @@ let workoutDataSchema = object({
             .of(
               object({
                 modification_exercise_id: number().nullable(),
-                sets: number()
-                  .nullable()
-                  .transform((value, originalValue) => (originalValue === 0 ? null : value)),
+                sets: number().nullable().transform(castZeroToNull),
                 amsap: boolean(),
-                reps: number()
-                  .nullable()
-                  .transform((value, originalValue) => (originalValue === 0 ? null : value)),
+                reps: number().nullable().transform(castZeroToNull),
                 amrap: boolean(),
-                weight: number()
-                  .nullable()
-                  .transform((value, originalValue) => (originalValue === 0 ? null : value)),
-                percentage_of_e1rm: number()
-                  .nullable()
-                  .transform((value, originalValue) => (originalValue === 0 ? null : value))
-                  .transform((value, originalValue) => (originalValue === 0 ? null : value)),
-                percentage_of_last_set: number()
-                  .nullable()
-                  .transform((value, originalValue) => (originalValue === 0 ? null : value)),
+                weight: number().nullable().transform(castZeroToNull),
+                percentage_of_e1rm: number().nullable().transform(castZeroToNull).transform(castZeroToNull),
+                percentage_of_last_set: number().nullable().transform(castZeroToNull),
                 adjusted_weight: number().nullable(),
                 duration: number().nullable(),
                 rpe_target: number().nullable(),
@@ -46,35 +60,17 @@ let workoutDataSchema = object({
                 .test(
                   "xor-sets-amsap",
                   'You can only have "sets" if "amsap" is false, and vice versa.',
-                  function (value) {
-                    const { sets, amsap } = value;
-                    if (amsap) {
-                      return sets === null;
-                    } else {
-                      return sets !== null;
-                    }
-                  }
+                  xorValidation("sets", "amsap")
                 )
                 .test(
                   "xor-reps-amrap",
                   'You can only have "reps" if "amrap" is false, and vice versa.',
-                  function (value) {
-                    const { reps, amrap } = value;
-                    if (amrap) {
-                      return reps === null;
-                    } else {
-                      return reps !== null;
-                    }
-                  }
+                  xorValidation("reps", "amrap")
                 )
                 .test(
                   "oneOf-weight-percentageOfe1rm-percentageOfLastSet",
                   'You can only have oneOf "weight" if "percentage_of_last_set" or "percentage_of_e1rm"',
-                  function (value) {
-                    const { weight, percentage_of_e1rm, percentage_of_last_set } = value;
-                    const count = [weight, percentage_of_last_set, percentage_of_e1rm].filter((v) => v != null).length;
-                    return count === 1;
-                  }
+                  oneOfValidation(["weight", "percentage_of_e1rm", "percentage_of_last_set"])
                 )
             ),
         })
@@ -84,19 +80,11 @@ let workoutDataSchema = object({
 
 type WorkoutData = InferType<typeof workoutDataSchema>;
 
-interface ValidateWorkoutResponse {
-  workoutData: WorkoutData | undefined;
-  error: ValidationError | undefined;
-}
-
-export const validateWorkout = async (workoutData: WorkoutData): Promise<ValidateWorkoutResponse> => {
+export const validateWorkout = async (workoutData: WorkoutData): Promise<WorkoutData | ValidationError> => {
   try {
     await workoutDataSchema.validate(workoutData);
-    return { workoutData: workoutData, error: undefined };
+    return workoutData;
   } catch (err) {
-    if (err instanceof ValidationError) {
-      return { workoutData: undefined, error: err };
-    }
     throw err;
   }
 };
