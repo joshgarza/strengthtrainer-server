@@ -1,4 +1,3 @@
-// custom.d.ts
 declare module "workout-types" {
   export interface ExerciseAssignment {
     modification_exercise_id: number;

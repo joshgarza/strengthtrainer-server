@@ -1,26 +1,26 @@
 import express from "express";
 import { userControllers, workoutControllers, relationControllers } from "../controllers/index.js";
-import { verifyJWT, validateUser } from "../utils/index.js";
+import { verifyJWT, validateUser as validateRequest } from "../utils/index.js";
 
-export const router = express.Router();
+export const openRouter = express.Router();
+export const authRouter = express.Router();
+
+authRouter.use(verifyJWT);
 
 // unprotected routes
-router.post("/register", userControllers.register);
-router.post("/login", userControllers.login);
-
-router.use(verifyJWT);
-// router.use(validateUser);
+openRouter.post("/register", userControllers.register);
+openRouter.post("/login", userControllers.login);
 
 // protected routes
-router.post("/workout-assignment", validateUser, workoutControllers.postWorkout);
-router.post("/workout-result", validateUser, workoutControllers.postWorkoutResult);
-router.get("/workouts/:id", validateUser, workoutControllers.getWorkouts);
-router.put("/workout-assignment/:id", validateUser, workoutControllers.putWorkout);
-router.put("/workout-result/:id", validateUser, workoutControllers.putWorkoutResult);
+authRouter.post("/workout-assignment", validateRequest, workoutControllers.postWorkout);
+authRouter.post("/workout-result", validateRequest, workoutControllers.postWorkoutResult);
+authRouter.get("/workouts/:id", validateRequest, workoutControllers.getWorkouts);
+authRouter.put("/workout-assignment/:id", validateRequest, workoutControllers.putWorkout);
+authRouter.put("/workout-result/:id", validateRequest, workoutControllers.putWorkoutResult);
 
 // saving for future features
-router.post("/reset-password", validateUser, userControllers.resetPassword);
-router.post("/password-reset", validateUser, userControllers.passwordReset);
-router.post("/coach-client-relation", relationControllers.postCoachClientRelation);
-router.get("/coach-client-relation", relationControllers.getCoachClientRelation);
-router.put("/coach-client-relation", relationControllers.putCoachClientRelation);
+openRouter.post("/reset-password", validateRequest, userControllers.resetPassword);
+openRouter.post("/password-reset", validateRequest, userControllers.passwordReset);
+authRouter.post("/coach-client-relation", relationControllers.postCoachClientRelation);
+authRouter.get("/coach-client-relation", relationControllers.getCoachClientRelation);
+authRouter.put("/coach-client-relation", relationControllers.putCoachClientRelation);

@@ -42,3 +42,23 @@ export const verifyJWT = async (req: Request, res: Response, next: NextFunction)
     return res.status(500).json({ message: err });
   }
 };
+
+// After decoding JWT, compare user id from JWT and resource id being requested
+export const validateUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    let id: string;
+    if (req.method === "POST") {
+      id = req.body.id;
+    } else {
+      id = req.params.id;
+    }
+
+    if (req.user?.id !== String(id)) {
+      return res.status(403).json({ message: "Error authorizing request" });
+    }
+
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: "Error authorizing request" });
+  }
+};
