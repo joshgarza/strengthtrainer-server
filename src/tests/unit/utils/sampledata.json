@@ -1,0 +1,62 @@
+{
+  "id": 61,
+  "workout_date": "2024-08-28T07:30:00Z",
+  "description": "Full Body Strength Workout",
+  "workout_assignment": {
+    "notes": "Focus on maintaining form throughout each exercise. Increase weights if the RPE is below target.",
+    "circuit_assignments": [
+      {
+        "sets": 4,
+        "exercise_assignments": [
+          {
+            "modification_exercise_id": 101,
+            "sets": 4,
+            "reps": 8,
+            "weight": 200,
+            "percentage_of_e1rm": 80,
+            "percentage_of_last_set": 90,
+            "adjusted_weight": 180,
+            "duration": 60,
+            "rpe_target": 7,
+            "amrap": false,
+            "amsap": false,
+            "rest_period": 120
+          },
+          {
+            "modification_exercise_id": 102,
+            "sets": 4,
+            "reps": 10,
+            "weight": 150,
+            "percentage_of_e1rm": 70,
+            "percentage_of_last_set": 85,
+            "adjusted_weight": 140,
+            "duration": 60,
+            "rpe_target": 8,
+            "amrap": false,
+            "amsap": false,
+            "rest_period": 90
+          }
+        ]
+      },
+      {
+        "sets": 3,
+        "exercise_assignments": [
+          {
+            "modification_exercise_id": 103,
+            "sets": 3,
+            "reps": 12,
+            "weight": 100,
+            "percentage_of_e1rm": 65,
+            "percentage_of_last_set": 85,
+            "adjusted_weight": 90,
+            "duration": 45,
+            "rpe_target": 8,
+            "amrap": false,
+            "amsap": false,
+            "rest_period": 60
+          }
+        ]
+      }
+    ]
+  }
+}
