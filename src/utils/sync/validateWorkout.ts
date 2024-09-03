@@ -27,11 +27,19 @@ const oneOfValidation = (fields: string[]) => {
 };
 
 let workoutDataSchema = object({
-  id: number().required(),
+  user_id: number().required(),
+  coach_id: number().required(),
+  is_workout_template: boolean().required(),
+  program_assignment_template_id: number().nullable(),
+  program_assignment_id: number().nullable(),
+  program_day: number().nullable(),
+  workout_assignment_template_id: number().nullable(),
   workout_date: date().required(),
+  workout_position: number().nullable(),
+  name: string().nullable(),
   description: string().nullable(),
+  notes: string().nullable(),
   workout_assignment: object({
-    notes: string().nullable(),
     circuit_assignments: array()
       .required()
       .min(1)

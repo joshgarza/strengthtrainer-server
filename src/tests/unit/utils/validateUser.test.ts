@@ -1,5 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
-import { validateUser } from "../../../utils/index.js";
+import { validateRequest } from "../../../utils/index.js";
 import { Request, Response, NextFunction } from "express";
 import { assert } from "console";
 
@@ -16,7 +16,7 @@ describe("validateUser", () => {
     const mockRequest = buildMockRequest(mockUser);
     const mockResponse = new MockResponse() as unknown as Response;
     const next = jest.fn();
-    validateUser(mockRequest, mockResponse, next);
+    validateRequest(mockRequest, mockResponse, next);
 
     expect(next).toHaveBeenCalled();
   });
@@ -27,7 +27,7 @@ describe("validateUser", () => {
     const mockRequest = buildMockRequest(mockUser);
     const mockResponse = new MockResponse() as unknown as Response;
     const next = jest.fn();
-    const actualResponse = await validateUser(mockRequest, mockResponse, next);
+    const actualResponse = await validateRequest(mockRequest, mockResponse, next);
 
     expect(actualResponse?.statusCode).toEqual(403);
     expect(next).toHaveBeenCalledTimes(0);

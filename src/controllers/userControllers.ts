@@ -2,28 +2,23 @@ import { Request, Response } from "express";
 import { signJWT, checkPassword, registerUser } from "../utils/index.js";
 
 export const userControllers = {
-  register: async (req: Request, res: Response): Promise<void> => {
+  register: async (req: Request, res: Response): Promise<Response> => {
     try {
       const { username, email, password, role } = req.body;
-      const { valid, userData, error } = await registerUser(
-        username,
-        email,
-        password,
-        role
-      );
+      const { valid, userData, error } = await registerUser(username, email, password, role);
 
       if (!valid) {
-        res.status(500).json({ message: error });
+        return res.status(500).json({ message: error });
       }
 
       const jwt = await signJWT(userData);
-      res.status(201).json({
+      return res.status(201).json({
         message: "User successfully registered",
         jwt: jwt,
       });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Error registering user" });
+      return res.status(500).json({ message: "Error registering user" });
     }
   },
   login: async (req: Request, res: Response): Promise<void> => {

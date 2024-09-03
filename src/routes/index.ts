@@ -1,6 +1,6 @@
 import express from "express";
 import { userControllers, workoutControllers, relationControllers } from "../controllers/index.js";
-import { verifyJWT, validateUser as validateRequest } from "../utils/index.js";
+import { verifyJWT, validateRequest } from "../utils/index.js";
 
 export const openRouter = express.Router();
 export const authRouter = express.Router();
@@ -13,6 +13,13 @@ openRouter.post("/login", userControllers.login);
 
 // protected routes
 authRouter.post("/workout-assignment", validateRequest, workoutControllers.postWorkout);
+authRouter.post("/circuit-assignment", validateRequest, workoutControllers.postCircuit);
+authRouter.post("/exercise-assignment", validateRequest, workoutControllers.postExercise);
+
+authRouter.post("/workout-assignment-template", validateRequest, workoutControllers.postWorkoutTemplate);
+authRouter.post("/circuit-assignment-template", validateRequest, workoutControllers.postCircuitTemplate);
+authRouter.post("/exercise-assignment-template", validateRequest, workoutControllers.postExerciseTemplate);
+
 authRouter.post("/workout-result", validateRequest, workoutControllers.postWorkoutResult);
 authRouter.get("/workouts/:id", validateRequest, workoutControllers.getWorkouts);
 authRouter.put("/workout-assignment/:id", validateRequest, workoutControllers.putWorkout);
