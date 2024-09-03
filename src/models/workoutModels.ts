@@ -1,44 +1,31 @@
 import { client } from "../config/db.js";
-
-interface ExerciseAssignment {
-  modification_exercise_id: number;
-  sets: number;
-  reps: number;
-  weight: number;
-  percentage_of_e1rm: number;
-  percentage_of_last_set: number;
-  adjusted_weight: number;
-  duration: number;
-  rpe_target: number;
-  amrap: boolean;
-  amsap: boolean;
-  rest_period: number;
-}
-
-interface CircuitAssignment {
-  sets: number;
-  exercise_assignments: ExerciseAssignment[];
-}
-
-interface WorkoutAssignment {
-  notes: string;
-  circuit_assignments: CircuitAssignment[];
-}
-
-interface WorkoutData {
-  client_id: number;
-  workout_date: Date;
-  description: string;
-  workout_assignment: WorkoutAssignment;
-}
+import { WorkoutData } from "../utils/sync/validateWorkout.js";
 
 export const workoutModels = {
-  createWorkout: async (workoutData: WorkoutData) => {
-    console.log(workoutData);
-    return workoutData;
-  },
   getWorkouts: async () => {},
-  postWorkout: async () => {},
+  postWorkout: async (workoutData: WorkoutData) => {
+    const query = `
+      INSERT INTO workout_assignments (user_id, coach_id, workout_date, name, description, notes)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id
+    `;
+    const values = [
+      workoutData.user_id,
+      workoutData.coach_id,
+      workoutData.workout_date,
+      workoutData.name,
+      workoutData.description,
+      workoutData.notes,
+    ];
+
+    try {
+      console.log(query, values);
+      const res = await client.query(query, values);
+      return res.rows[0];
+    } catch (err) {
+      throw err;
+    }
+  },
   putWorkout: async () => {},
   postWorkoutResult: async () => {},
   putWorkoutResult: async () => {},

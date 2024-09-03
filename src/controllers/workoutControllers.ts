@@ -3,14 +3,24 @@ import { workoutModels } from "../models/index.js";
 import { validateWorkout } from "../utils/index.js";
 import { ValidationError } from "yup";
 
+// {
+//   "user_id": 4,
+//   "coach_id": 4,
+//   "workout_date": "2024-08-28T07:30:00Z",
+//   "name": null,
+//   "description": null,
+//   "notes": null
+// }
+
 export const workoutControllers = {
   getWorkouts: async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ message: req.params });
   },
   postWorkout: async (req: Request, res: Response): Promise<void> => {
     try {
-      // validate workout
-      const workoutData = await validateWorkout(req.body);
+      await validateWorkout(req.body);
+
+      const workoutData = await workoutModels.postWorkout(req.body);
 
       res.status(201).json({ message: workoutData });
     } catch (error) {

@@ -157,11 +157,11 @@ CREATE TABLE program_assignments (
 CREATE TABLE workout_assignments (
   id SERIAL PRIMARY KEY,
   user_id INT NOT NULL REFERENCES users(id),
-  coach_id_id INT NOT NULL REFERENCES users(id),
+  coach_id INT NOT NULL REFERENCES users(id),
   program_assignment_id INT NULL REFERENCES program_assignments(id),
   workout_assignment_template_id INT NULL REFERENCES workout_assignment_templates(id),
   workout_date TIMESTAMP NOT NULL,
-  workout_position INT NOT NULL,
+  workout_position INT NULL,
   name TEXT NULL,
   description TEXT NULL,
   notes TEXT NULL,

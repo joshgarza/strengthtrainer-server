@@ -1,20 +1,20 @@
 import { object, array, string, number, date, boolean, InferType, ValidationError } from "yup";
 
 const workoutDataSchema = object({
-  user_id: number().required(),
-  coach_id: number().required(),
+  user_id: string().required(),
+  coach_id: string().required(),
   workout_date: date().required(),
-  name: string().nullable(),
-  description: string().nullable(),
-  notes: string().nullable(),
+  name: string().nullable().default(null),
+  description: string().nullable().default(null),
+  notes: string().nullable().default(null),
 });
 
-type WorkoutData = InferType<typeof workoutDataSchema>;
+export type WorkoutData = InferType<typeof workoutDataSchema>;
 
-export const validateWorkout = async (workoutData: WorkoutData): Promise<WorkoutData | ValidationError> => {
+export const validateWorkout = async (workoutData: WorkoutData): Promise<WorkoutData> => {
   try {
-    await workoutDataSchema.validate(workoutData);
-    return workoutData;
+    const validatedWorkoutData = await workoutDataSchema.validate(workoutData);
+    return validatedWorkoutData;
   } catch (err) {
     throw err;
   }
