@@ -7,7 +7,7 @@ export const hashPassword = async (password: string) => {
     return hash;
   } catch (err) {
     console.error("Error hashing password:", err);
-    return "";
+    throw err;
   }
 };
 
@@ -17,5 +17,6 @@ export const compareHash = async (password: string, hash: string) => {
     return result;
   } catch (err) {
     console.error("Error comparing hash and password:", err);
+    throw err;
   }
 };

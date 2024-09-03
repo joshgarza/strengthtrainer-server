@@ -4,9 +4,10 @@ const jwt = jsonwebtoken;
 
 interface UserData {
   id: string;
-  username: string;
+  name: string;
   email: string;
   role: string;
+  authorizedUserIds: number[];
 }
 
 export const signJWT = async (payload: UserData): Promise<string> => {
@@ -36,6 +37,7 @@ export const verifyJWT = async (req: Request, res: Response, next: NextFunction)
       // decoding id coerces it into a number by default. Coercing it back to a string.
       decoded.id = String(decoded.id);
       req.user = decoded;
+      console.log(decoded);
       next();
     });
   } catch (err) {
@@ -52,8 +54,6 @@ export const validateRequest = async (req: Request, res: Response, next: NextFun
     } else {
       user_id = req.params.user_id;
     }
-
-    console.log(user_id);
 
     if (req.user?.id !== String(user_id)) {
       return res.status(403).json({ message: "Error authorizing request" });

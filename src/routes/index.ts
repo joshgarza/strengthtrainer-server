@@ -15,6 +15,9 @@ openRouter.post("/login", userControllers.login);
 authRouter.post("/workout-assignment", validateRequest, workoutControllers.postWorkout);
 authRouter.post("/circuit-assignment", validateRequest, workoutControllers.postCircuit);
 authRouter.post("/exercise-assignment", validateRequest, workoutControllers.postExercise);
+authRouter.put("/workout-assignment", validateRequest, workoutControllers.putWorkout);
+authRouter.put("/circuit-assignment", validateRequest, workoutControllers.putCircuit);
+authRouter.put("/exercise-assignment", validateRequest, workoutControllers.putExercise);
 
 authRouter.post("/workout-assignment-template", validateRequest, workoutControllers.postWorkoutTemplate);
 authRouter.post("/circuit-assignment-template", validateRequest, workoutControllers.postCircuitTemplate);

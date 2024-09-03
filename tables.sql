@@ -30,7 +30,7 @@ CREATE DATABASE strengthtrainer;
 -- DROP TABLE IF EXISTS exercise_modifications CASCADE;
 -- DROP TABLE IF EXISTS exercises CASCADE;
 -- DROP TABLE IF EXISTS tokens CASCADE;
--- DROP TABLE IF EXISTS coach_client_relation CASCADE;
+-- DROP TABLE IF EXISTS coach_user_relation CASCADE;
 -- DROP TABLE IF EXISTS users CASCADE;
 
 -- DROP SEQUENCE IF EXISTS workout_position_seq CASCADE;
@@ -48,10 +48,16 @@ CREATE TABLE users (
   deleted_at TIMESTAMP NULL
 );
 
-CREATE TABLE coach_client_relation (
+CREATE TABLE authorized_user_ids (
   id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users(id),
+  coach_id INT NOT NULL REFERENCES users(id)
+);
+
+CREATE TABLE coach_user_relation (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users(id),
   coach_id INT NOT NULL REFERENCES users(id),
-  client_id INT NOT NULL REFERENCES users(id),
   start_date DATE NOT NULL,
   end_date DATE NULL,
   status VARCHAR NOT NULL,
@@ -168,7 +174,8 @@ CREATE TABLE circuit_assignments (
   workout_assignment_id INT NOT NULL REFERENCES workout_assignments(id),
   circuit_assignment_template_id INT NULL REFERENCES circuit_assignment_templates(id),
   circuit_position INT NOT NULL,
-  sets INT NOT NULL DEFAULT 1 CHECK (sets >= 1)
+  sets INT NOT NULL DEFAULT 1 CHECK (sets >= 1),
+  rest_period INT NULL
 );
 
 CREATE TABLE exercise_assignments (
