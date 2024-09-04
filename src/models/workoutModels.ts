@@ -27,10 +27,9 @@ export const workoutModels = {
   getWorkouts: async () => {},
   postExercise: async (exercise: Exercise) => {
     const query = `
-      INSERT INTO exercises (user_id, name, description, difficulty)
+      INSERT INTO exercises (user_id, name, description, difficulty) VALUES ($1, $2, $3, $4) RETURNING *
     `;
     const values = [exercise.user_id, exercise.name, exercise.description, exercise.difficulty];
-
     try {
       const res = await client.query(query, values);
       return res.rows[0];
