@@ -1,5 +1,5 @@
 import { object, string, number, date, boolean } from "yup";
-import { castNullToZero, castZeroToNull, xorValidation, oneOfValidation } from "../utils/index.js";
+import { castZeroToNull, xorValidation, oneOfValidation } from "../utils/index.js";
 
 /**
  * For every schema created, import the schema into types/index.d.ts, infer type from schema, and add both schema and type to Schema and Data types respectively.
@@ -24,7 +24,7 @@ export const circuitAssignmentSchema = object({
   circuit_assignment_template_id: number().nullable().default(null),
   circuit_position: number().nullable().default(null),
   sets: number().required(),
-  rest_period: number().nullable().transform(castNullToZero),
+  rest_period: number().nullable().default(0),
 });
 
 export const exerciseAssignmentSchema = object({

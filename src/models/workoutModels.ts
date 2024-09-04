@@ -38,7 +38,7 @@ export const workoutModels = {
     INSERT INTO circuit_assignments (workout_assignment_id, circuit_assignment_template_id, circuit_position, sets, rest_period)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING id
-  `;
+    `;
     const values = [
       circuitAssignment.workout_assignment_id,
       circuitAssignment.circuit_assignment_template_id,
@@ -55,8 +55,39 @@ export const workoutModels = {
     }
   },
   postExercise: async (exerciseAssignment: ExerciseAssignment) => {
-    console.log(exerciseAssignment);
-    return exerciseAssignment;
+    // first check what circuit position should be
+
+    // const circuit_position = workoutModels.getCircuitPosition(circuitAssignment.workout_assignment_id);
+    // const circuit_position = 0;
+    const query = `
+    INSERT INTO exercise_assignments (circuit_assignment_id, exercise_assignment_template_id, exercise_id, exercise_position, sets, reps, weight, percentage_of_e1rm, percentage_of_last_set, adjusted_weight, rpe_target, amrap, amsap, duration, rest_period)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+    RETURNING *
+    `;
+    const values = [
+      exerciseAssignment.circuit_assignment_id,
+      exerciseAssignment.exercise_assignment_template_id,
+      exerciseAssignment.exercise_id,
+      // exerciseAssignment.exercise_position,
+      0,
+      exerciseAssignment.sets,
+      exerciseAssignment.reps,
+      exerciseAssignment.weight,
+      exerciseAssignment.percentage_of_e1rm,
+      exerciseAssignment.percentage_of_last_set,
+      exerciseAssignment.adjusted_weight,
+      exerciseAssignment.rpe_target,
+      exerciseAssignment.amrap,
+      exerciseAssignment.amsap,
+      exerciseAssignment.duration,
+      exerciseAssignment.rest_period,
+    ];
+    try {
+      const res = await client.query(query, values);
+      return res.rows[0];
+    } catch (err) {
+      throw err;
+    }
   },
   putWorkout: async () => {},
   postWorkoutResult: async () => {},
