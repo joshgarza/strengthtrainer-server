@@ -162,7 +162,7 @@ CREATE TABLE workout_assignments (
   program_assignment_id INT NULL REFERENCES program_assignments(id),
   workout_assignment_template_id INT NULL REFERENCES workout_assignment_templates(id),
   workout_date TIMESTAMP NOT NULL,
-  workout_position INT NOT NULL,
+  position INT NOT NULL,
   name TEXT NULL,
   description TEXT NULL,
   notes TEXT NULL,
@@ -174,7 +174,7 @@ CREATE TABLE circuit_assignments (
   id SERIAL PRIMARY KEY,
   workout_assignment_id INT NOT NULL REFERENCES workout_assignments(id),
   circuit_assignment_template_id INT NULL REFERENCES circuit_assignment_templates(id),
-  circuit_position INT NOT NULL,
+  position INT NOT NULL,
   sets INT NOT NULL DEFAULT 1 CHECK (sets >= 1),
   rest_period INT NOT NULL DEFAULT 0
 );
@@ -184,7 +184,7 @@ CREATE TABLE exercise_assignments (
   circuit_assignment_id INT NOT NULL REFERENCES circuit_assignments(id),
   exercise_assignment_template_id INT NULL REFERENCES exercise_assignment_templates(id),
   exercise_id INT NOT NULL REFERENCES exercises(id),
-  exercise_position INT NOT NULL,
+  position INT NOT NULL,
   sets INT NULL,
   reps INT NULL,
   weight FLOAT NULL,

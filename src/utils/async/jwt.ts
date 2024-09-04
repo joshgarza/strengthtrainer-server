@@ -48,6 +48,7 @@ export const verifyJWT = async (req: Request, res: Response, next: NextFunction)
 // After decoding JWT, compare user id from JWT and resource id being requested
 export const validateRequest = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log("validating");
     let user_id: string;
     if (req.method === "POST") {
       user_id = req.body.user_id;

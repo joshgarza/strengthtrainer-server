@@ -5,13 +5,20 @@ import { castZeroToNull, xorValidation, oneOfValidation } from "../utils/index.j
  * For every schema created, import the schema into types/index.d.ts, infer type from schema, and add both schema and type to Schema and Data types respectively.
  */
 
+export const exerciseSchema = object({
+  user_id: number().required(),
+  name: string().required(),
+  description: string().nullable().default(""),
+  difficulty: string().required(),
+});
+
 export const workoutAssignmentSchema = object({
   user_id: number().required(),
   coach_id: number().required(),
   program_assignment_id: number().nullable().default(null),
   workout_assignment_template_id: number().nullable().default(null),
   workout_date: date().required(),
-  workout_position: number().nullable().default(null),
+  position: number().nullable().default(null),
   name: string().nullable().default(null),
   description: string().nullable().default(null),
   notes: string().nullable().default(null),
@@ -22,7 +29,7 @@ export const circuitAssignmentSchema = object({
   coach_id: number().required(),
   workout_assignment_id: number().required(),
   circuit_assignment_template_id: number().nullable().default(null),
-  circuit_position: number().nullable().default(null),
+  position: number().nullable().default(null),
   sets: number().required(),
   rest_period: number().nullable().default(0),
 });
@@ -33,7 +40,7 @@ export const exerciseAssignmentSchema = object({
   circuit_assignment_id: number().required(),
   exercise_assignment_template_id: number().nullable().default(null),
   exercise_id: number().required(),
-  exercise_position: number().nullable().default(null),
+  position: number().nullable().default(null),
   sets: number().nullable().default(null).transform(castZeroToNull),
   reps: number().nullable().default(null).transform(castZeroToNull),
   weight: number().nullable().default(null).transform(castZeroToNull),
