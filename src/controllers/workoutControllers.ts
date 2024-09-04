@@ -1,16 +1,8 @@
 import { Request, Response } from "express";
 import { workoutModels } from "../models/index.js";
-import { validateWorkout, validateCircuit } from "../utils/index.js";
+import { validateRequestData } from "../utils/index.js";
 import { ValidationError } from "yup";
-
-// {
-//   "user_id": 4,
-//   "coach_id": 4,
-//   "workout_date": "2024-08-28T07:30:00Z",
-//   "name": null,
-//   "description": null,
-//   "notes": null
-// }
+import { workoutDataSchema, circuitDataSchema } from "../schemas/schemas.js";
 
 export const workoutControllers = {
   getWorkouts: async (req: Request, res: Response): Promise<void> => {
@@ -18,7 +10,7 @@ export const workoutControllers = {
   },
   postWorkout: async (req: Request, res: Response): Promise<void> => {
     try {
-      await validateWorkout(req.body);
+      await validateRequestData(workoutDataSchema, req.body);
 
       const workoutData = await workoutModels.postWorkout(req.body);
 
@@ -31,7 +23,7 @@ export const workoutControllers = {
   },
   postCircuit: async (req: Request, res: Response): Promise<void> => {
     try {
-      await validateCircuit(req.body);
+      await validateRequestData(circuitDataSchema, req.body);
 
       const circuitData = await workoutModels.postCircuit(req.body);
 

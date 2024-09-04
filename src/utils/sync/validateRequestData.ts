@@ -1,14 +1,10 @@
-// import { object, array, string, number, date, boolean, InferType, ObjectSchema, ValidationError } from "yup";
-// import { WorkoutData, workoutDataSchema } from "./validateWorkout.js";
+import { Schema, Data } from "../../types/lib.js";
 
-// type RequestData = WorkoutData;
-// type YupSchema = typeof workoutDataSchema;
-
-// export const validateData = async (schema: YupSchema, data: RequestData): Promise<RequestData> => {
-//   try {
-//     const validatedWorkoutData = await schema.validate(data);
-//     return validatedWorkoutData;
-//   } catch (err) {
-//     throw err;
-//   }
-// };
+export const validateRequestData = async (schema: Schema, data: Data): Promise<Data> => {
+  try {
+    const validatedWorkoutData = await schema.validate(data);
+    return validatedWorkoutData;
+  } catch (err) {
+    throw err;
+  }
+};
