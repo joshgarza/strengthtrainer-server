@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { workoutModels } from "../models/index.js";
-import { validateWorkout } from "../utils/index.js";
+import { validateWorkout, validateCircuit } from "../utils/index.js";
 import { ValidationError } from "yup";
 
 // {
@@ -29,7 +29,19 @@ export const workoutControllers = {
       }
     }
   },
-  postCircuit: async (req: Request, res: Response): Promise<void> => {},
+  postCircuit: async (req: Request, res: Response): Promise<void> => {
+    try {
+      await validateCircuit(req.body);
+
+      const circuitData = await workoutModels.postCircuit(req.body);
+
+      res.status(201).json({ message: circuitData });
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        res.status(500).json({ message: "Failed to create workout", error: error.message });
+      }
+    }
+  },
   postExercise: async (req: Request, res: Response): Promise<void> => {},
 
   putWorkout: async (req: Request, res: Response): Promise<void> => {},
