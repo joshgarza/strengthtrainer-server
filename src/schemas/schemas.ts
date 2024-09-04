@@ -44,7 +44,7 @@ export const exerciseAssignmentSchema = object({
   amrap: boolean().nullable().default(null),
   amsap: boolean().nullable().default(null),
   duration: number().nullable().default(null),
-  rest_period: number().nullable().transform(castNullToZero),
+  rest_period: number().nullable().default(0),
 })
   .test("xor-reps-amrap", "You can only have reps if amrap is false, and vice versa.", xorValidation("reps", "amrap"))
   .test("xor-sets-amsap", "You can only have sets if amsap is false, and vice versa.", xorValidation("sets", "amsap"))

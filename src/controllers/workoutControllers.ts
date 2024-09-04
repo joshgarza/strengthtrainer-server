@@ -10,11 +10,11 @@ export const workoutControllers = {
   },
   postWorkout: async (req: Request, res: Response): Promise<void> => {
     try {
-      await validateRequestData(workoutAssignmentSchema, req.body);
+      const validatedAssignmentSchema = await validateRequestData(workoutAssignmentSchema, req.body);
 
-      const workoutAssignment = await workoutModels.postWorkout(req.body);
+      const workoutAssignmentResponse = await workoutModels.postWorkout(validatedAssignmentSchema);
 
-      res.status(201).json({ message: workoutAssignment });
+      res.status(201).json({ message: workoutAssignmentResponse });
     } catch (error) {
       if (error instanceof ValidationError) {
         res.status(500).json({ message: "Failed to create workout", error: error.message });
@@ -23,11 +23,11 @@ export const workoutControllers = {
   },
   postCircuit: async (req: Request, res: Response): Promise<void> => {
     try {
-      await validateRequestData(circuitAssignmentSchema, req.body);
+      const validatedAssignmentSchema = await validateRequestData(circuitAssignmentSchema, req.body);
 
-      const circuitAssignment = await workoutModels.postCircuit(req.body);
+      const circuitAssignmentResponse = await workoutModels.postCircuit(validatedAssignmentSchema);
 
-      res.status(201).json({ message: circuitAssignment });
+      res.status(201).json({ message: circuitAssignmentResponse });
     } catch (error) {
       if (error instanceof ValidationError) {
         res.status(500).json({ message: "Failed to create workout", error: error.message });
@@ -36,14 +36,14 @@ export const workoutControllers = {
   },
   postExercise: async (req: Request, res: Response): Promise<void> => {
     try {
-      await validateRequestData(exerciseAssignmentSchema, req.body);
+      const validatedAssignmentSchema = await validateRequestData(exerciseAssignmentSchema, req.body);
+      console.log(validatedAssignmentSchema);
 
-      const exerciseAssignment = await workoutModels.postExercise(req.body);
+      const exerciseAssignmentResponse = await workoutModels.postExercise(validatedAssignmentSchema);
 
-      res.status(201).json({ message: exerciseAssignment });
+      res.status(201).json({ message: exerciseAssignmentResponse });
     } catch (error) {
       if (error instanceof ValidationError) {
-        console.log(error.message);
         res.status(500).json({ message: "Failed to create workout", error: error.message });
       }
     }

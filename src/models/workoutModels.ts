@@ -55,6 +55,7 @@ export const workoutModels = {
     }
   },
   postExercise: async (exerciseAssignment: ExerciseAssignment) => {
+    console.log(exerciseAssignment);
     return exerciseAssignment;
   },
   putWorkout: async () => {},
