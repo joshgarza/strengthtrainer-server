@@ -175,7 +175,7 @@ CREATE TABLE circuit_assignments (
   circuit_assignment_template_id INT NULL REFERENCES circuit_assignment_templates(id),
   circuit_position INT NOT NULL,
   sets INT NOT NULL DEFAULT 1 CHECK (sets >= 1),
-  rest_period INT NULL
+  rest_period INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE exercise_assignments (
