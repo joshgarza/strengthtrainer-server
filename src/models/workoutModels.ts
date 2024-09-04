@@ -2,7 +2,7 @@ import { client } from "../config/db.js";
 
 export const workoutModels = {
   getWorkouts: async () => {},
-  postWorkout: async (workoutData: WorkoutData) => {
+  postWorkout: async (workoutAssignment: WorkoutAssignment) => {
     // todo: determine workoutPosition based on workouts of same date. default is to increment position by 1
     const workoutPosition = 0;
     const query = `
@@ -11,15 +11,15 @@ export const workoutModels = {
       RETURNING id
     `;
     const values = [
-      workoutData.user_id,
-      workoutData.coach_id,
-      workoutData.program_assignment_id,
-      workoutData.workout_assignment_template_id,
-      workoutData.workout_date,
+      workoutAssignment.user_id,
+      workoutAssignment.coach_id,
+      workoutAssignment.program_assignment_id,
+      workoutAssignment.workout_assignment_template_id,
+      workoutAssignment.workout_date,
       workoutPosition,
-      workoutData.name,
-      workoutData.description,
-      workoutData.notes,
+      workoutAssignment.name,
+      workoutAssignment.description,
+      workoutAssignment.notes,
     ];
 
     try {
@@ -29,10 +29,10 @@ export const workoutModels = {
       throw err;
     }
   },
-  postCircuit: async (circuitData: CircuitData) => {
+  postCircuit: async (circuitAssignment: CircuitAssignment) => {
     // first check what circuit position should be
 
-    // const circuit_position = workoutModels.getCircuitPosition(circuitData.workout_assignment_id);
+    // const circuit_position = workoutModels.getCircuitPosition(circuitAssignment.workout_assignment_id);
     const circuit_position = 0;
     const query = `
     INSERT INTO circuit_assignments (workout_assignment_id, circuit_assignment_template_id, circuit_position, sets, rest_period)
@@ -40,11 +40,11 @@ export const workoutModels = {
     RETURNING id
   `;
     const values = [
-      circuitData.workout_assignment_id,
-      circuitData.circuit_assignment_template_id,
+      circuitAssignment.workout_assignment_id,
+      circuitAssignment.circuit_assignment_template_id,
       circuit_position,
-      circuitData.sets,
-      circuitData.rest_period,
+      circuitAssignment.sets,
+      circuitAssignment.rest_period,
     ];
 
     try {
@@ -53,6 +53,9 @@ export const workoutModels = {
     } catch (err) {
       throw err;
     }
+  },
+  postExercise: async (exerciseAssignment: ExerciseAssignment) => {
+    return exerciseAssignment;
   },
   putWorkout: async () => {},
   postWorkoutResult: async () => {},

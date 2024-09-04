@@ -1,7 +1,7 @@
 // types/express.d.ts
 import { JwtPayload } from "jsonwebtoken";
 import { InferType } from "yup";
-import { workoutDataSchema, circuitDataSchema } from "../schemas/schemas.ts";
+import { workoutAssignmentSchema, circuitAssignmentSchema, exerciseAssignmentSchema } from "../schemas/schemas.ts";
 
 declare global {
   namespace Express {
@@ -9,9 +9,13 @@ declare global {
       user?: JwtPayload;
     }
   }
-  export type WorkoutData = InferType<typeof workoutDataSchema>;
-  export type CircuitData = InferType<typeof circuitDataSchema>;
+  export type WorkoutAssignment = InferType<typeof workoutAssignmentSchema>;
+  export type CircuitAssignment = InferType<typeof circuitAssignmentSchema>;
+  export type ExerciseAssignment = InferType<typeof exerciseAssignmentSchema>;
 
-  export type apiSchema = typeof workoutDataSchema | typeof circuitDataSchema;
-  export type RequestData = WorkoutData | CircuitData;
+  export type apiSchema =
+    | typeof workoutAssignmentSchema
+    | typeof circuitAssignmentSchema
+    | typeof exerciseAssignmentSchema;
+  export type RequestData = WorkoutAssignment | CircuitAssignment | ExerciseAssignment;
 }

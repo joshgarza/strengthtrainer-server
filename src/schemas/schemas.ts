@@ -1,5 +1,5 @@
-import { object, array, string, number, date, boolean, InferType, ValidationError } from "yup";
-import { castNullToZero } from "../utils/index.js";
+import { object, string, number, date, boolean } from "yup";
+import { castNullToZero, castZeroToNull, xorValidation, oneOfValidation } from "../utils/index.js";
 
 /**
  * For every schema created, import the schema into types/index.d.ts, infer type from schema, and add both schema and type to Schema and Data types respectively.
@@ -34,9 +34,9 @@ export const exerciseAssignmentSchema = object({
   exercise_assignment_template_id: number().nullable().default(null),
   exercise_id: number().required(),
   exercise_position: number().nullable().default(null),
-  sets: number().nullable().default(null),
-  reps: number().nullable().default(null),
-  weight: number().nullable().default(null),
+  sets: number().nullable().default(null).transform(castZeroToNull),
+  reps: number().nullable().default(null).transform(castZeroToNull),
+  weight: number().nullable().default(null).transform(castZeroToNull),
   percentage_of_e1rm: number().nullable().default(null),
   percentage_of_last_set: number().nullable().default(null),
   adjusted_weight: number().nullable().default(null),
@@ -45,4 +45,11 @@ export const exerciseAssignmentSchema = object({
   amsap: boolean().nullable().default(null),
   duration: number().nullable().default(null),
   rest_period: number().nullable().transform(castNullToZero),
-});
+})
+  .test("xor-reps-amrap", "You can only have reps if amrap is false, and vice versa.", xorValidation("reps", "amrap"))
+  .test("xor-sets-amsap", "You can only have sets if amsap is false, and vice versa.", xorValidation("sets", "amsap"))
+  .test(
+    "oneOf-weight-percentageOfe1rm-percentageOfLastSet",
+    "You must have only one of weight, percentage_of_last_set, or percentage_of_e1rm",
+    oneOfValidation(["weight", "percentage_of_e1rm", "percentage_of_last_set"])
+  );
