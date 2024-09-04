@@ -1,21 +1,22 @@
 -- \i tables.sql to run this file from psql prompt
--- SELECT
---     pid,
---     usename,
---     application_name,
---     client_addr,
---     state,
---     query
--- FROM
---     pg_stat_activity
--- WHERE
---     datname = 'strengthtrainer';
-
--- SELECT pg_terminate_backend(pid)
--- FROM pg_stat_activity
--- WHERE datname = 'strengthtrainer';
 
 \c postgres;
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    -- Loop through all active processes in pg_stat_activity for the 'strengthtrainer' database
+    FOR r IN
+        SELECT pid
+        FROM pg_stat_activity
+        WHERE datname = 'strengthtrainer'
+          AND pid <> pg_backend_pid() -- Exclude the current session
+    LOOP
+        -- Dynamically terminate each backend process
+        EXECUTE 'SELECT pg_terminate_backend(' || r.pid || ')';
+    END LOOP;
+END $$;
+
 DROP DATABASE IF EXISTS strengthtrainer;
 CREATE DATABASE strengthtrainer;
 \c strengthtrainer;
