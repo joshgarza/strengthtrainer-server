@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { workoutModels } from "../models/index.js";
 import { validateRequestData } from "../utils/index.js";
 import { ValidationError } from "yup";
-import { workoutDataSchema, circuitDataSchema } from "../schemas/schemas.js";
+import { workoutAssignmentSchema, circuitAssignmentSchema } from "../schemas/schemas.js";
 
 export const workoutControllers = {
   getWorkouts: async (req: Request, res: Response): Promise<void> => {
@@ -10,7 +10,7 @@ export const workoutControllers = {
   },
   postWorkout: async (req: Request, res: Response): Promise<void> => {
     try {
-      await validateRequestData(workoutDataSchema, req.body);
+      await validateRequestData(workoutAssignmentSchema, req.body);
 
       const workoutData = await workoutModels.postWorkout(req.body);
 
@@ -23,7 +23,7 @@ export const workoutControllers = {
   },
   postCircuit: async (req: Request, res: Response): Promise<void> => {
     try {
-      await validateRequestData(circuitDataSchema, req.body);
+      await validateRequestData(circuitAssignmentSchema, req.body);
 
       const circuitData = await workoutModels.postCircuit(req.body);
 
