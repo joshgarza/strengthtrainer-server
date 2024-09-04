@@ -1,5 +1,4 @@
 import { client } from "../config/db.js";
-import { WorkoutData, CircuitData } from "../types/lib.js";
 
 export const workoutModels = {
   getWorkouts: async () => {},

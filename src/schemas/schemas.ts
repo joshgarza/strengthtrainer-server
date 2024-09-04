@@ -2,7 +2,7 @@ import { object, array, string, number, date, boolean, InferType, ValidationErro
 import { castNullToZero } from "../utils/index.js";
 
 /**
- * For every schema created, import the schema into types/lib.d.ts, infer type from schema, and add both schema and type to Schema and Data types respectively.
+ * For every schema created, import the schema into types/index.d.ts, infer type from schema, and add both schema and type to Schema and Data types respectively.
  */
 
 export const workoutDataSchema = object({
