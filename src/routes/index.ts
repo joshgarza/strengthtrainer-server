@@ -16,15 +16,16 @@ authRouter.post("/exercise", validateRequest, workoutControllers.postExercise);
 authRouter.post("/workout-assignment", validateRequest, workoutControllers.postWorkoutAssignment);
 authRouter.post("/circuit-assignment", validateRequest, workoutControllers.postCircuitAssignment);
 authRouter.post("/exercise-assignment", validateRequest, workoutControllers.postExerciseAssignment);
+
 authRouter.put("/workout-assignment", validateRequest, workoutControllers.putWorkout);
 authRouter.put("/circuit-assignment", validateRequest, workoutControllers.putCircuit);
 authRouter.put("/exercise-assignment", validateRequest, workoutControllers.putExercise);
+authRouter.post("/workout-result", validateRequest, workoutControllers.postWorkoutResult);
 
 authRouter.post("/workout-assignment-template", validateRequest, workoutControllers.postWorkoutTemplate);
 authRouter.post("/circuit-assignment-template", validateRequest, workoutControllers.postCircuitTemplate);
 authRouter.post("/exercise-assignment-template", validateRequest, workoutControllers.postExerciseTemplate);
 
-authRouter.post("/workout-result", validateRequest, workoutControllers.postWorkoutResult);
 authRouter.get("/workouts/:id", validateRequest, workoutControllers.getWorkouts);
 authRouter.put("/workout-assignment/:id", validateRequest, workoutControllers.putWorkout);
 authRouter.put("/workout-result/:id", validateRequest, workoutControllers.putWorkoutResult);

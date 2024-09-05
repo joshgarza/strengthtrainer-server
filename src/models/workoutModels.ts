@@ -1,3 +1,4 @@
+import { QueryResult } from "pg";
 import { client } from "../config/db.js";
 
 const parent_id: Record<string, string> = {
@@ -7,7 +8,7 @@ const parent_id: Record<string, string> = {
 };
 
 export const workoutModels = {
-  findLastPosition: async (table: keyof typeof parent_id, parent_assignment_id: number | null): Promise<number> => {
+  findNextPosition: async (table: keyof typeof parent_id, parent_assignment_id: number | null): Promise<number> => {
     const parentIdColumn = parent_id[table];
 
     // Ensure the column exists in the parent_id map
@@ -39,7 +40,7 @@ export const workoutModels = {
     }
   },
   postWorkoutAssignment: async (workoutAssignment: WorkoutAssignment) => {
-    const nextPosition = await workoutModels.findLastPosition(
+    const nextPosition = await workoutModels.findNextPosition(
       "workout_assignments",
       workoutAssignment.program_assignment_id
     );
@@ -69,7 +70,7 @@ export const workoutModels = {
     }
   },
   postCircuitAssignment: async (circuitAssignment: CircuitAssignment) => {
-    const nextPosition = await workoutModels.findLastPosition(
+    const nextPosition = await workoutModels.findNextPosition(
       "circuit_assignments",
       circuitAssignment.workout_assignment_id
     );
@@ -95,44 +96,55 @@ export const workoutModels = {
       throw err;
     }
   },
-  postExerciseAssignment: async (exerciseAssignment: ExerciseAssignment) => {
-    // first check what circuit position should be
-    console.log(exerciseAssignment.position, "in postExercise");
-    exerciseAssignment.position = await workoutModels.findLastPosition(
-      "exercise_assignments",
-      exerciseAssignment.circuit_assignment_id
-    );
-
-    console.log(exerciseAssignment.position, "in postExercise");
-    const query = `
-    INSERT INTO exercise_assignments (circuit_assignment_id, exercise_assignment_template_id, exercise_id, position, sets, reps, weight, percentage_of_e1rm, percentage_of_last_set, adjusted_weight, rpe_target, amrap, amsap, duration, rest_period)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-    RETURNING *
-    `;
-    const values = [
-      exerciseAssignment.circuit_assignment_id,
-      exerciseAssignment.exercise_assignment_template_id,
-      exerciseAssignment.exercise_id,
-      exerciseAssignment.position,
-      exerciseAssignment.sets,
-      exerciseAssignment.reps,
-      exerciseAssignment.weight,
-      exerciseAssignment.percentage_of_e1rm,
-      exerciseAssignment.percentage_of_last_set,
-      exerciseAssignment.adjusted_weight,
-      exerciseAssignment.rpe_target,
-      exerciseAssignment.amrap,
-      exerciseAssignment.amsap,
-      exerciseAssignment.duration,
-      exerciseAssignment.rest_period,
-    ];
+  postExerciseAssignment: async (exerciseAssignment: ExerciseAssignment): Promise<QueryResult> => {
     try {
+      await client.query("BEGIN");
+      exerciseAssignment.position = await workoutModels.findNextPosition(
+        "exercise_assignments",
+        exerciseAssignment.circuit_assignment_id
+      );
+
+      const query = `
+        INSERT INTO exercise_assignments (circuit_assignment_id, exercise_assignment_template_id, exercise_id, position, sets, reps, weight, percentage_of_e1rm, percentage_of_last_set, adjusted_weight, rpe_target, amrap, amsap, duration, rest_period)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+        RETURNING *
+      `;
+      const values = [
+        exerciseAssignment.circuit_assignment_id,
+        exerciseAssignment.exercise_assignment_template_id,
+        exerciseAssignment.exercise_id,
+        exerciseAssignment.position,
+        exerciseAssignment.sets,
+        exerciseAssignment.reps,
+        exerciseAssignment.weight,
+        exerciseAssignment.percentage_of_e1rm,
+        exerciseAssignment.percentage_of_last_set,
+        exerciseAssignment.adjusted_weight,
+        exerciseAssignment.rpe_target,
+        exerciseAssignment.amrap,
+        exerciseAssignment.amsap,
+        exerciseAssignment.duration,
+        exerciseAssignment.rest_period,
+      ];
       const res = await client.query(query, values);
+      // post exercise_assignment_result as empty values
+      await workoutModels.postExerciseAssignmentResult(exerciseAssignment.user_id, res.rows[0].id);
+      // on success return the exercise_assignment
+      await client.query("COMMIT");
       return res.rows[0];
     } catch (err) {
       console.error(err);
       throw err;
     }
+  },
+  postExerciseAssignmentResult: async (userId: number, workoutAssignmentId: number): Promise<void> => {
+    const query = `
+      INSERT INTO exercise_assignment_results (user_id, exercise_assignment_id)
+      VALUES ($1, $2)
+      RETURNING id
+    `;
+    const values = [userId, workoutAssignmentId];
+    await client.query(query, values);
   },
   putWorkout: async () => {},
   postWorkoutResult: async () => {},

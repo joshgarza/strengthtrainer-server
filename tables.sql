@@ -198,7 +198,7 @@ CREATE TABLE exercise_assignments (
   rest_period INT NULL
 );
 
-CREATE TABLE exercise_results (
+CREATE TABLE exercise_assignment_results (
   id SERIAL PRIMARY KEY,
   user_id INT NOT NULL REFERENCES users(id),
   exercise_assignment_id INT NOT NULL REFERENCES exercise_assignments(id),
@@ -208,6 +208,7 @@ CREATE TABLE exercise_results (
   actual_rpe INT NULL,
   actual_duration TIMESTAMP NULL,
   notes TEXT NULL,
+  completed_at TIMESTAMP NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

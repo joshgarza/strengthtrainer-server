@@ -6,7 +6,6 @@ export const checkPassword = async (email: string, password: string) => {
     const hash = await userModels.getUserHash(email);
     await compareHash(password, hash);
     const userData = await userModels.getUserData(email);
-    console.log("after getUserData", userData);
 
     return userData;
   } catch (err) {

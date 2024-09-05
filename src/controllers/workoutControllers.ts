@@ -15,9 +15,7 @@ export const workoutControllers = {
   },
   postExercise: async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log("checking");
       const validatedExerciseSchema = await validateRequestData(exerciseSchema, req.body);
-      console.log(typeof validatedExerciseSchema);
       const exerciseResponse = await workoutModels.postExercise(validatedExerciseSchema);
 
       res.status(201).json({ message: exerciseResponse });
@@ -62,7 +60,6 @@ export const workoutControllers = {
   postExerciseAssignment: async (req: Request, res: Response): Promise<void> => {
     try {
       const validatedAssignmentSchema = await validateRequestData(exerciseAssignmentSchema, req.body);
-      console.log(validatedAssignmentSchema);
 
       const exerciseAssignmentResponse = await workoutModels.postExerciseAssignment(validatedAssignmentSchema);
 

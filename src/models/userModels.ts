@@ -49,7 +49,6 @@ export const userModels = {
       const userRes = await client.query(userQuery, userValue);
       const userId = userRes.rows[0].id;
       const authRes = await userModels.getAuthorizedIds(userId);
-      console.log(authRes, "authres");
 
       await client.query("COMMIT");
 
