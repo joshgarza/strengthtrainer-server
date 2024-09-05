@@ -5,6 +5,7 @@ import {
   workoutAssignmentSchema,
   circuitAssignmentSchema,
   exerciseAssignmentSchema,
+  exerciseAssignmentResultSchema,
   exerciseSchema,
 } from "../schemas/schemas.ts";
 
@@ -18,11 +19,5 @@ declare global {
   export type WorkoutAssignment = InferType<typeof workoutAssignmentSchema>;
   export type CircuitAssignment = InferType<typeof circuitAssignmentSchema>;
   export type ExerciseAssignment = InferType<typeof exerciseAssignmentSchema>;
-
-  // export type apiSchema =
-  //   | typeof exerciseSchema
-  //   | typeof workoutAssignmentSchema
-  //   | typeof circuitAssignmentSchema
-  //   | typeof exerciseAssignmentSchema;
-  // export type RequestData = Exercise | WorkoutAssignment | CircuitAssignment | ExerciseAssignment;
+  export type ExerciseAssignmentResult = InferType<typeof exerciseAssignmentResultSchema>;
 }

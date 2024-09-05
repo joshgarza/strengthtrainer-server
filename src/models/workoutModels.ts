@@ -138,15 +138,43 @@ export const workoutModels = {
     }
   },
   postExerciseAssignmentResult: async (userId: number, workoutAssignmentId: number): Promise<void> => {
-    const query = `
-      INSERT INTO exercise_assignment_results (user_id, exercise_assignment_id)
-      VALUES ($1, $2)
-      RETURNING id
-    `;
-    const values = [userId, workoutAssignmentId];
-    await client.query(query, values);
+    try {
+      const query = `
+        INSERT INTO exercise_assignment_results (user_id, exercise_assignment_id)
+        VALUES ($1, $2)
+        RETURNING id
+      `;
+      const values = [userId, workoutAssignmentId];
+      await client.query(query, values);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
+  putExerciseAssignmentResult: async (exerciseAssignmentResult: ExerciseAssignmentResult) => {
+    try {
+      const query = `
+        UPDATE exercise_assignment_results
+        SET actual_sets=$1, actual_reps=$2, actual_weight=$3, actual_rpe=$4, actual_duration=$5, notes=$6, completed_at=$7
+        WHERE exercise_assignment_id=$7
+      `;
+      const values = [
+        exerciseAssignmentResult.actual_sets,
+        exerciseAssignmentResult.actual_reps,
+        exerciseAssignmentResult.actual_weight,
+        exerciseAssignmentResult.actual_rpe,
+        exerciseAssignmentResult.actual_duration,
+        exerciseAssignmentResult.notes,
+        exerciseAssignmentResult.completed_at,
+        exerciseAssignmentResult.exercise_assignment_id,
+      ];
+
+      const res = await client.query(query, values);
+      return res.rows[0];
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   },
   putWorkout: async () => {},
-  postWorkoutResult: async () => {},
-  putWorkoutResult: async () => {},
 };

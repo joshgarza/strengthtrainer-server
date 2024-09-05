@@ -6,6 +6,7 @@ import {
   workoutAssignmentSchema,
   circuitAssignmentSchema,
   exerciseAssignmentSchema,
+  exerciseAssignmentResultSchema,
   exerciseSchema,
 } from "../schemas/schemas.js";
 
@@ -15,8 +16,8 @@ export const workoutControllers = {
   },
   postExercise: async (req: Request, res: Response): Promise<void> => {
     try {
-      const validatedExerciseSchema = await validateRequestData(exerciseSchema, req.body);
-      const exerciseResponse = await workoutModels.postExercise(validatedExerciseSchema);
+      const validatedSchema = await validateRequestData(exerciseSchema, req.body);
+      const exerciseResponse = await workoutModels.postExercise(validatedSchema);
 
       res.status(201).json({ message: exerciseResponse });
     } catch (err) {
@@ -29,9 +30,9 @@ export const workoutControllers = {
   },
   postWorkoutAssignment: async (req: Request, res: Response): Promise<void> => {
     try {
-      const validatedAssignmentSchema = await validateRequestData(workoutAssignmentSchema, req.body);
+      const validatedSchema = await validateRequestData(workoutAssignmentSchema, req.body);
 
-      const workoutAssignmentResponse = await workoutModels.postWorkoutAssignment(validatedAssignmentSchema);
+      const workoutAssignmentResponse = await workoutModels.postWorkoutAssignment(validatedSchema);
 
       res.status(201).json({ message: workoutAssignmentResponse });
     } catch (err) {
@@ -44,9 +45,9 @@ export const workoutControllers = {
   },
   postCircuitAssignment: async (req: Request, res: Response): Promise<void> => {
     try {
-      const validatedAssignmentSchema = await validateRequestData(circuitAssignmentSchema, req.body);
+      const validatedSchema = await validateRequestData(circuitAssignmentSchema, req.body);
 
-      const circuitAssignmentResponse = await workoutModels.postCircuitAssignment(validatedAssignmentSchema);
+      const circuitAssignmentResponse = await workoutModels.postCircuitAssignment(validatedSchema);
 
       res.status(201).json({ message: circuitAssignmentResponse });
     } catch (err) {
@@ -59,14 +60,31 @@ export const workoutControllers = {
   },
   postExerciseAssignment: async (req: Request, res: Response): Promise<void> => {
     try {
-      const validatedAssignmentSchema = await validateRequestData(exerciseAssignmentSchema, req.body);
+      const validatedSchema = await validateRequestData(exerciseAssignmentSchema, req.body);
 
-      const exerciseAssignmentResponse = await workoutModels.postExerciseAssignment(validatedAssignmentSchema);
+      const exerciseAssignmentResponse = await workoutModels.postExerciseAssignment(validatedSchema);
 
       res.status(201).json({ message: exerciseAssignmentResponse });
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        res.status(500).json({ message: "Failed to create workout", error: error.message });
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        res.status(500).json({ message: "Failed to create workout", error: err.message });
+      } else {
+        res.status(500).json({ message: "Failed to create workout", error: err });
+      }
+    }
+  },
+  putExerciseAssignmentResult: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const validatedSchema = await validateRequestData(exerciseAssignmentResultSchema, req.body);
+
+      const exerciseAssignmentResultResponse = await workoutModels.putExerciseAssignmentResult(validatedSchema);
+
+      res.status(201).json({ message: exerciseAssignmentResultResponse });
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        res.status(500).json({ message: "Failed to create workout", error: err.message });
+      } else {
+        res.status(500).json({ message: "Failed to create workout", error: err });
       }
     }
   },

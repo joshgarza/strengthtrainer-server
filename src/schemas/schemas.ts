@@ -60,3 +60,16 @@ export const exerciseAssignmentSchema = object({
     "You must have only one of weight, percentage_of_last_set, or percentage_of_e1rm",
     oneOfValidation(["weight", "percentage_of_e1rm", "percentage_of_last_set"])
   );
+
+export const exerciseAssignmentResultSchema = object({
+  user_id: number().required(),
+  coach_id: number().required(),
+  exercise_assignment_id: number().required(),
+  actual_sets: number().nullable().default(null),
+  actual_reps: number().nullable().default(null),
+  actual_weight: number().nullable().default(null),
+  actual_rpe: number().nullable().default(null),
+  actual_duration: number().nullable().default(null),
+  notes: string().nullable().default(null),
+  completed_at: date().nullable().default(null),
+});
