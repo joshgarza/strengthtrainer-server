@@ -208,7 +208,7 @@ CREATE TABLE exercise_assignment_results (
   actual_rpe INT NULL,
   actual_duration INT NULL,
   notes TEXT NULL,
-  completed_at TIMESTAMP NULL,
+  completed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

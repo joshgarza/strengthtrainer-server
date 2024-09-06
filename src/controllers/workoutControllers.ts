@@ -82,9 +82,9 @@ export const workoutControllers = {
       res.status(201).json({ message: exerciseAssignmentResultResponse });
     } catch (err) {
       if (err instanceof ValidationError) {
-        res.status(500).json({ message: "Failed to create workout", error: err.message });
+        res.status(500).json({ message: "Failed to update workout result", error: err.message });
       } else {
-        res.status(500).json({ message: "Failed to create workout", error: err });
+        res.status(500).json({ message: "Failed to update workout result", error: err });
       }
     }
   },
