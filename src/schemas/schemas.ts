@@ -1,5 +1,5 @@
 import { object, string, number, date, boolean } from "yup";
-import { castZeroToNull, xorValidation, oneOfValidation } from "../utils/index.js";
+import { castValueToNull, xorValidation, oneOfValidation, minSuppliedValues } from "../utils/index.js";
 
 /**
  * For every schema created, import the schema into types/index.d.ts, infer type from schema, and add both schema and type to Schema and Data types respectively.
@@ -41,9 +41,9 @@ export const exerciseAssignmentSchema = object({
   exercise_assignment_template_id: number().nullable().default(null),
   exercise_id: number().required(),
   position: number().nullable().default(null),
-  sets: number().nullable().default(null).transform(castZeroToNull),
-  reps: number().nullable().default(null).transform(castZeroToNull),
-  weight: number().nullable().default(null).transform(castZeroToNull),
+  sets: number().nullable().default(null).transform(castValueToNull),
+  reps: number().nullable().default(null).transform(castValueToNull),
+  weight: number().nullable().default(null).transform(castValueToNull),
   percentage_of_e1rm: number().nullable().default(null),
   percentage_of_last_set: number().nullable().default(null),
   adjusted_weight: number().nullable().default(null),
@@ -63,7 +63,7 @@ export const exerciseAssignmentSchema = object({
 
 export const exerciseAssignmentResultSchema = object({
   user_id: number().required(),
-  coach_id: number().required(),
+  coach_id: number().nullable().transform(castValueToNull).default(null),
   exercise_assignment_id: number().required(),
   actual_sets: number().nullable().default(null),
   actual_reps: number().nullable().default(null),
@@ -72,4 +72,16 @@ export const exerciseAssignmentResultSchema = object({
   actual_duration: number().nullable().default(null),
   notes: string().nullable().default(null),
   completed_at: date().nullable().default(null),
-});
+}).test(
+  "minOneOf-results",
+  "You must provide at least one assignment result to update",
+  minSuppliedValues(1, [
+    "actual_sets",
+    "actual_reps",
+    "actual_weight",
+    "actual_rpe",
+    "actual_duration",
+    "notes",
+    "completed_at",
+  ])
+);
