@@ -9,6 +9,7 @@ export const validateRequestData = async <TSchema extends AnySchema>(
     const validatedData = await schema.validate(data);
     return validatedData as InferType<TSchema>;
   } catch (err) {
+    console.error(err);
     throw err;
   }
 };
