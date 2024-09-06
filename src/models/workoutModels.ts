@@ -1,15 +1,18 @@
 import { QueryResult } from "pg";
 import { client } from "../config/db.js";
 
-const parent_id: Record<string, string> = {
+const ref_id: Record<string, string> = {
   workout_assignments: "program_assignment_id",
   circuit_assignments: "workout_assignment_id",
   exercise_assignments: "circuit_assignment_id",
+  exercise_assignment_results: "exercise_assignment_id",
 };
 
+type Table = "exercise_assignment_results" | "workout_assignments" | "circuit_assignments" | "exercise_assignments";
+
 export const workoutModels = {
-  findNextPosition: async (table: keyof typeof parent_id, parent_assignment_id: number | null): Promise<number> => {
-    const parentIdColumn = parent_id[table];
+  findNextPosition: async (table: keyof typeof ref_id, parent_assignment_id: number | null): Promise<number> => {
+    const parentIdColumn = ref_id[table];
 
     // Ensure the column exists in the parent_id map
     if (!parentIdColumn) {
@@ -153,28 +156,44 @@ export const workoutModels = {
   },
   putExerciseAssignmentResult: async (exerciseAssignmentResult: ExerciseAssignmentResult) => {
     try {
-      const query = `
-        UPDATE exercise_assignment_results
-        SET actual_sets=$1, actual_reps=$2, actual_weight=$3, actual_rpe=$4, actual_duration=$5, notes=$6, completed_at=$7
-        WHERE exercise_assignment_id=$7
-      `;
-      const values = [
-        exerciseAssignmentResult.actual_sets,
-        exerciseAssignmentResult.actual_reps,
-        exerciseAssignmentResult.actual_weight,
-        exerciseAssignmentResult.actual_rpe,
-        exerciseAssignmentResult.actual_duration,
-        exerciseAssignmentResult.notes,
-        exerciseAssignmentResult.completed_at,
-        exerciseAssignmentResult.exercise_assignment_id,
-      ];
-
-      const res = await client.query(query, values);
-      return res.rows[0];
+      return await workoutModels.patchTable("exercise_assignment_results", exerciseAssignmentResult);
     } catch (err) {
       console.error(err);
       throw err;
     }
   },
   putWorkout: async () => {},
+  patchTable: async (table: Table, data: ValidatedData) => {
+    const ignoreList = ["user_id", "exercise_assignment_id"];
+    const queryList = [`UPDATE ${table}`];
+    queryList.push("SET");
+
+    const set: string[] = [];
+    const keyOrder: string[] = [];
+
+    Object.keys(data)
+      .filter((key) => {
+        const typedKey = key as keyof ValidatedData;
+        return data[typedKey] !== null && !ignoreList.includes(typedKey);
+      })
+      .forEach((key, i) => {
+        const typedKey = key as keyof ValidatedData;
+        set.push(`${key}=$${i + 1}`);
+        keyOrder.push(key);
+      });
+
+    queryList.push(set.join(", "));
+    set.push(ref_id[table]);
+    keyOrder.push(ref_id[table]);
+    queryList.push(`WHERE ${ref_id[table]}=$${keyOrder.length}`);
+
+    const values: number[] | string[] = keyOrder.map((key) => {
+      const typedKey = key as keyof ValidatedData;
+      return data[typedKey];
+    });
+    const query = queryList.join(" ");
+
+    const res = await client.query(query, values);
+    return res.rows[0];
+  },
 };
