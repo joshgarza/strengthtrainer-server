@@ -48,10 +48,14 @@ export const verifyJWT = async (req: Request, res: Response, next: NextFunction)
 export const validateRequest = async (req: Request, res: Response, next: NextFunction) => {
   try {
     let user_id: string;
-    if (req.method === "POST") {
+    if (req.method === "POST" || req.method === "PATCH") {
       user_id = req.body.user_id;
     } else {
-      user_id = req.params.user_id;
+      if (typeof req.query.user_id === "string") {
+        user_id = req.query.user_id;
+      } else {
+        return res.status(403).json({ message: "Error authorizing request" });
+      }
     }
 
     if (!req.user?.authorizedUserIds.includes(user_id)) {
