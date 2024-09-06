@@ -20,4 +20,10 @@ declare global {
   export type CircuitAssignment = InferType<typeof circuitAssignmentSchema>;
   export type ExerciseAssignment = InferType<typeof exerciseAssignmentSchema>;
   export type ExerciseAssignmentResult = InferType<typeof exerciseAssignmentResultSchema>;
+  export type ValidatedData =
+    | Exercise
+    | WorkoutAssignment
+    | CircuitAssignment
+    | ExerciseAssignment
+    | ExerciseAssignmentResult;
 }
