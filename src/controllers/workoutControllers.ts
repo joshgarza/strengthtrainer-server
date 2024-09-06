@@ -11,7 +11,10 @@ import {
 } from "../schemas/schemas.js";
 
 export const workoutControllers = {
-  getWorkouts: async (req: Request, res: Response): Promise<void> => {
+  getUserWorkouts: async (req: Request, res: Response): Promise<void> => {
+    // user_id is in route params i.e. req.params.user_id
+    // coach_id is in query params i.e. req.query.coach_id
+
     res.status(200).json({ message: req.params });
   },
   postExercise: async (req: Request, res: Response): Promise<void> => {

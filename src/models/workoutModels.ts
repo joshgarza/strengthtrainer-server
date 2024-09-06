@@ -164,6 +164,7 @@ export const workoutModels = {
   },
   putWorkout: async () => {},
   patchTable: async (table: Table, data: ValidatedData) => {
+    // todo: abstract out ignoreList somehow so patchTable is agnostic of the table and data coming in
     const ignoreList = ["user_id", "exercise_assignment_id"];
     const queryList = [`UPDATE ${table}`];
     queryList.push("SET");

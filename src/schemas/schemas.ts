@@ -5,6 +5,8 @@ import { castValueToNull, xorValidation, oneOfValidation, minSuppliedValues } fr
  * For every schema created, import the schema into types/index.d.ts, infer type from schema, and add both schema and type to Schema and Data types respectively.
  */
 
+export const getUserWorkoutSchema = object({});
+
 export const exerciseSchema = object({
   user_id: number().required(),
   name: string().required(),
